@@ -33,10 +33,8 @@ public partial class AppLogic {
 
             public Transition On(in Input.EndGame input) => To<LeavingGame>();
             public Transition On(in Input.LoadGame input) {
-                var fileName = input.FileName;
-                return To<LoadingSaveFile>().With(
-                    (state) => ((LoadingSaveFile)state).FileName = fileName
-                );
+                Output(new Output.StartLoadingSaveFile(input.FileName));
+                return ToSelf();
             }
         }
     }

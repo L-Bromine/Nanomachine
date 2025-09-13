@@ -15,7 +15,8 @@ public interface IGame : INode3D {
 
     public bool LoadGame(string? fileName = null);
     public bool SaveGame(string? filename = null);
-    public void EndGame();
+    public void ClearGame();
+
 }
 
 [Meta(typeof(IAutoNode))]
@@ -43,7 +44,8 @@ public partial class Game : Node3D, IGame {
     }
 
     public bool SaveGame(string? filename = null) => throw new System.NotImplementedException();
-    public void StartGame() => throw new System.NotImplementedException();
-    public void EndGame() => throw new System.NotImplementedException();
-
+    public void ClearGame() {
+        Logger.i.Log($"正在析构游戏……");
+        // TODO 析构游戏
+    }
 }

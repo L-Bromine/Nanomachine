@@ -18,6 +18,9 @@ using System.Text.Json.Nodes;
 public interface INewGameSettingPanel : IControl {
     public event NewGameSettingPanel.LoadNewGameEventHandler LoadNewGame;
     public event NewGameSettingPanel.BackMenuEventHandler BackMenu;
+
+    public void InitPreview();
+    public void ClearPreview();
 }
 
 [Meta(typeof(IAutoNode))]
@@ -48,6 +51,7 @@ public partial class NewGameSettingPanel : Control, INewGameSettingPanel {
     [Node] public ILabel StarCountLabel { get; set; } = default!;
     [Node] public IButton RandSeedButtom { get; set; } = default!;
     [Node] public ILabel SeedLabel { get; set; } = default!;
+    [Node] public INode3D ViewNode { get; set; } = default!;
 
     #endregion Nodes
 
@@ -63,6 +67,8 @@ public partial class NewGameSettingPanel : Control, INewGameSettingPanel {
         {1f, new Color("#30005011")}
     });
     #endregion Colors
+    private Random _random = new((int)Time.GetTicksMsec());
+
 
     private int _number = 100;
     private float _maxX = 50;
@@ -85,7 +91,6 @@ public partial class NewGameSettingPanel : Control, INewGameSettingPanel {
         StarCountSlider.ValueChanged += OnCountSliderChanged;
         RandSeedButtom.Pressed += OnRandSeed;
 
-        OnRandSeed(); // 随机初始化星图
     }
 
     public void OnExitTree() {
@@ -93,6 +98,23 @@ public partial class NewGameSettingPanel : Control, INewGameSettingPanel {
         BackMenuButton.Pressed -= OnLoadGamePressed;
         StarCountSlider.ValueChanged -= OnCountSliderChanged;
         RandSeedButtom.Pressed -= OnRandSeed;
+    }
+
+    public void InitPreview() {
+        Show();
+        ViewNode.Show();
+        OnRandSeed(); // 随机初始化星图
+    }
+
+    public void ClearPreview() {
+        Hide();
+        ViewNode.Hide();
+        _number = 100;
+        StarCountLabel.Text = $"恒星数量：{_number}";
+        // 清除所有节点
+        foreach (var child in GalaxyPreview.GetChildren()) {
+            child.QueueFree();
+        }
     }
 
     public void OnLoadGamePressed() => EmitSignal(SignalName.BackMenu);
@@ -108,8 +130,7 @@ public partial class NewGameSettingPanel : Control, INewGameSettingPanel {
     }
 
     private void OnRandSeed() {
-        var random = new Random((int)Time.GetTicksMsec());
-        _seed = random.Next();
+        _seed = _random.Next();
         SeedLabel.Text = $"{_seed}：随机种子";
         ChangePreView();
     }
@@ -160,4 +181,6 @@ public partial class NewGameSettingPanel : Control, INewGameSettingPanel {
             Logger.e.Log("无法获得stars数组");
         }
     }
+
+
 }

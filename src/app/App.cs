@@ -6,8 +6,6 @@ using Chickensoft.Introspection;
 
 using Godot;
 
-using Nanomachine.Log;
-
 // 应用程序主接口，定义应用级别的功能
 // 实现了ICanvasLayer和依赖注入提供者接口
 public interface IApp : ICanvasLayer, IProvide<IAppRepo>;
@@ -101,7 +99,7 @@ public partial class App : CanvasLayer, IApp {
           })
 		  // 结束当前游戏，析构
 		  .Handle((in AppLogic.Output.RemoveExistingGame _) => {
-            //   Game.ClearGame();
+              Game.ClearGame();
 			  Game.Hide();
           })
 		  // 处理显示主菜单输出
@@ -126,7 +124,7 @@ public partial class App : CanvasLayer, IApp {
 			(in AppLogic.Output.StartLoadingSaveFile output) => {
 				// 订阅存档文件加载完成事件
 				Game.SaveFileLoaded += OnSaveFileLoaded;
-                // 加载现有游戏存档
+                // 加载现有游戏存档 TODO 异步加载
                 {
                     var flag = Game.LoadGame(output.FileName);
                     AppLogic.Input(new AppLogic.Input.SaveFileLoaded(flag));
@@ -135,7 +133,7 @@ public partial class App : CanvasLayer, IApp {
           ).Handle(
             (in AppLogic.Output.StartSettingNewGame _) => {
 			    HideMenus(); // 隐藏所有菜单
-                NewGameSettingPanel.Show();
+                NewGameSettingPanel.InitPreview();
                 FadeInFromBlack();
             }
           );
@@ -187,7 +185,7 @@ public partial class App : CanvasLayer, IApp {
     public void HideMenus() {
         Splash.Hide(); // 隐藏启动画面
         Menu.Hide(); // 隐藏主菜单
-        NewGameSettingPanel.Hide(); // 隐藏新游戏设置界面
+        NewGameSettingPanel.ClearPreview(); // 隐藏新游戏设置界面
     }
 
     // 节点退出场景树时清理资源

@@ -19,9 +19,8 @@ public partial class AppLogic {
             public void OnFinishStartNewGame(string? filename) => Input(new Input.LoadGame(filename));
 
             public Transition On(in Input.LoadGame input) {
-                var filename = input.FileName;
-                return To<LoadingSaveFile>().With(
-                    (state) => ((LoadingSaveFile)state).FileName = filename);
+                Output(new Output.StartLoadingSaveFile(input.FileName));
+                return To<InGame>();
             }
             public Transition On(in Input.EndGame input) => To<LeavingGame>();
         }

@@ -34,15 +34,16 @@ handle_input_locally = false
 size = Vector2i(3840, 2160)
 render_target_update_mode = 4
 
-[node name="GalaxyReview" type="Node3D" parent="SubViewportContainer/SubViewport"]
+[node name="ViewNode" type="Node3D" parent="SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
 
-[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/GalaxyReview"]
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/ViewNode"]
 transform = Transform3D(0.914107, -0.338291, 0.223534, -0.0128747, 0.526798, 0.849893, -0.405269, -0.779771, 0.477195, 22.928, 53.486, 54.226)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport/GalaxyReview"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport/ViewNode"]
 environment = SubResource("Environment_jkdq5")
 
-[node name="GalaxyPreview" type="Node3D" parent="SubViewportContainer/SubViewport/GalaxyReview"]
+[node name="GalaxyPreview" type="Node3D" parent="SubViewportContainer/SubViewport/ViewNode"]
 unique_name_in_owner = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

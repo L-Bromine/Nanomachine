@@ -23,8 +23,11 @@ public partial class AppLogic {
             public Transition On(in Input.NewGame input) => To<LeavingMenu>()
                 .With((state) => ((LeavingMenu)state).TO = To<SettingNewGame>());
 
-            public Transition On(in Input.LoadGame input) => To<LeavingMenu>()
-                    .With((state) => ((LeavingMenu)state).TO = To<LoadingSaveFile>());
+            public Transition On(in Input.LoadGame input) {
+                Output(new Output.StartLoadingSaveFile(input.FileName));
+                return To<LeavingMenu>()
+                    .With((state) => ((LeavingMenu)state).TO = To<InGame>());
+            }
         }
     }
 }
