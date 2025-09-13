@@ -1,0 +1,107 @@
+[gd_scene load_steps=10 format=3 uid="uid://bvylq4u0he018"]
+
+[ext_resource type="Script" uid="uid://ddt3uu3j27e1u" path="res://src/app/App.cs" id="1_g7sps"]
+[ext_resource type="PackedScene" uid="uid://50cjus4kewng" path="res://src/game/Game.tscn" id="2_iuu71"]
+[ext_resource type="PackedScene" uid="uid://cwsfvhqinjpy4" path="res://src/ui/menu/Menu.tscn" id="4_kh3vh"]
+[ext_resource type="PackedScene" uid="uid://bj23syd0yewty" path="res://src/ui/newGameSettingPanel/NewGameSettingPanel.tscn" id="4_v0mgf"]
+[ext_resource type="PackedScene" uid="uid://7tblo640sji4" path="res://src/ui/menu/splash/Splash.tscn" id="7_eh6dj"]
+
+[sub_resource type="Animation" id="Animation_asqem"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BlankScreenControl/BlankScreen:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_tj2lb"]
+resource_name = "fade_in"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BlankScreenControl/BlankScreen:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ps7d4"]
+resource_name = "fade_out"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BlankScreenControl/BlankScreen:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_piei0"]
+_data = {
+&"RESET": SubResource("Animation_asqem"),
+&"fade_in": SubResource("Animation_tj2lb"),
+&"fade_out": SubResource("Animation_ps7d4")
+}
+
+[node name="App" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_g7sps")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+deterministic = true
+libraries = {
+&"": SubResource("AnimationLibrary_piei0")
+}
+
+[node name="Game" parent="." instance=ExtResource("2_iuu71")]
+unique_name_in_owner = true
+visible = false
+
+[node name="NewGameSettingPanel" parent="." instance=ExtResource("4_v0mgf")]
+unique_name_in_owner = true
+visible = false
+
+[node name="Menu" parent="." instance=ExtResource("4_kh3vh")]
+unique_name_in_owner = true
+visible = false
+
+[node name="Splash" parent="." instance=ExtResource("7_eh6dj")]
+unique_name_in_owner = true
+visible = false
+mouse_filter = 1
+
+[node name="BlankScreenControl" type="Control" parent="."]
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BlankScreen" type="ColorRect" parent="BlankScreenControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

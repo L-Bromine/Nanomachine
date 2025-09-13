@@ -1,0 +1,36 @@
+@startuml AppLogic
+state "AppLogic State" as Nanomachine_AppLogic_State {
+  state "InGame" as Nanomachine_AppLogic_State_InGame
+  state "LeavingGame" as Nanomachine_AppLogic_State_LeavingGame
+  state "LeavingMenu" as Nanomachine_AppLogic_State_LeavingMenu
+  state "LoadingSaveFile" as Nanomachine_AppLogic_State_LoadingSaveFile
+  state "MainMenu" as Nanomachine_AppLogic_State_MainMenu
+  state "SettingNewGame" as Nanomachine_AppLogic_State_SettingNewGame
+  state "SplashScreen" as Nanomachine_AppLogic_State_SplashScreen
+}
+
+Nanomachine_AppLogic_State_InGame --> Nanomachine_AppLogic_State_LeavingGame : EndGame
+Nanomachine_AppLogic_State_InGame --> Nanomachine_AppLogic_State_LoadingSaveFile : LoadGame
+Nanomachine_AppLogic_State_LeavingGame --> Nanomachine_AppLogic_State_MainMenu : FadeOutFinished
+Nanomachine_AppLogic_State_LeavingMenu --> Nanomachine_AppLogic_State_MainMenu : FadeOutFinished
+Nanomachine_AppLogic_State_LoadingSaveFile --> Nanomachine_AppLogic_State_InGame : SaveFileLoaded
+Nanomachine_AppLogic_State_LoadingSaveFile --> Nanomachine_AppLogic_State_MainMenu : SaveFileLoaded
+Nanomachine_AppLogic_State_MainMenu --> Nanomachine_AppLogic_State_LeavingMenu : LoadGame
+Nanomachine_AppLogic_State_MainMenu --> Nanomachine_AppLogic_State_LeavingMenu : NewGame
+Nanomachine_AppLogic_State_SettingNewGame --> Nanomachine_AppLogic_State_LeavingGame : EndGame
+Nanomachine_AppLogic_State_SettingNewGame --> Nanomachine_AppLogic_State_LoadingSaveFile : LoadGame
+Nanomachine_AppLogic_State_SplashScreen --> Nanomachine_AppLogic_State_MainMenu : FadeOutFinished
+
+Nanomachine_AppLogic_State_InGame : OnEnter → ShowGame
+Nanomachine_AppLogic_State_InGame : OnExit → HideGame
+Nanomachine_AppLogic_State_LeavingGame : OnEnter → FadeToBlack
+Nanomachine_AppLogic_State_LeavingGame : OnFadeOutFinished → RemoveExistingGame
+Nanomachine_AppLogic_State_LeavingMenu : OnEnter → FadeToBlack
+Nanomachine_AppLogic_State_LoadingSaveFile : OnEnter → StartLoadingSaveFile
+Nanomachine_AppLogic_State_MainMenu : OnEnter → ShowMainMenu
+Nanomachine_AppLogic_State_SettingNewGame : OnEnter → StartSettingNewGame
+Nanomachine_AppLogic_State_SplashScreen : OnEnter → ShowSplashScreen
+Nanomachine_AppLogic_State_SplashScreen : OnSplashScreenSkipped() → HideSplashScreen
+
+[*] --> Nanomachine_AppLogic_State_SplashScreen
+@enduml

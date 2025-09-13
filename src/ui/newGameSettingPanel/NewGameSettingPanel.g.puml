@@ -1,0 +1,7 @@
+@startuml
+
+class NewGameSettingPanel  {
+	[[vscode://file/d:\GodotProgram\nanomachine\src\ui\newGameSettingPanel\NewGameSettingPanel.cs ScriptFile]]
+}
+
+@enduml

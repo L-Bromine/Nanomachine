@@ -1,0 +1,12 @@
+namespace Nanomachine;
+
+public partial class AppLogic {
+    public static class Input {
+        public readonly record struct FadeInFinished;
+        public readonly record struct FadeOutFinished;
+        public readonly record struct NewGame;
+        public readonly record struct LoadGame(string? FileName);
+        public readonly record struct EndGame;
+        public readonly record struct SaveFileLoaded(bool Flag);
+    }
+}
