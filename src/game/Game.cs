@@ -49,3 +49,6 @@ public partial class Game : Node3D, IGame {
         // TODO 析构游戏
     }
 }
+
+/// TODO 为状态机添加Output
+/// 为Load添加filename参数的处理

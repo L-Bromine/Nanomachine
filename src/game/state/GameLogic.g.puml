@@ -1,25 +1,22 @@
 @startuml GameLogic
 state "GameLogic State" as Nanomachine_GameLogic_State {
-  state "Pauseing" as Nanomachine_GameLogic_State_Pauseing
-  state "Playing" as Nanomachine_GameLogic_State_Playing
+  state "Loading" as Nanomachine_GameLogic_State_Loading
+  state "Playing" as Nanomachine_GameLogic_State_Playing {
+    state "Pauseing" as Nanomachine_GameLogic_State_Pauseing
+  }
   state "Quit" as Nanomachine_GameLogic_State_Quit
   state "Readying" as Nanomachine_GameLogic_State_Readying
-  state "SetNewGame" as Nanomachine_GameLogic_State_SetNewGame
 }
 
+Nanomachine_GameLogic_State_Loading --> Nanomachine_GameLogic_State_Playing : Back
+Nanomachine_GameLogic_State_Loading --> Nanomachine_GameLogic_State_Quit : Exit
 Nanomachine_GameLogic_State_Pauseing --> Nanomachine_GameLogic_State_Playing : Back
 Nanomachine_GameLogic_State_Pauseing --> Nanomachine_GameLogic_State_Quit : Exit
 Nanomachine_GameLogic_State_Playing --> Nanomachine_GameLogic_State_Pauseing : Back
-Nanomachine_GameLogic_State_Readying --> Nanomachine_GameLogic_State_Playing : Load
-Nanomachine_GameLogic_State_Readying --> Nanomachine_GameLogic_State_SetNewGame : NewStart
-Nanomachine_GameLogic_State_SetNewGame --> Nanomachine_GameLogic_State_Playing : FinishSetGame
-Nanomachine_GameLogic_State_SetNewGame --> Nanomachine_GameLogic_State_Readying : Back
+Nanomachine_GameLogic_State_Readying --> Nanomachine_GameLogic_State_Loading : Load
 
 Nanomachine_GameLogic_State_Pauseing : OnEnter → IntoPaused
 Nanomachine_GameLogic_State_Pauseing : OnExit → OutofPaused
-Nanomachine_GameLogic_State_SetNewGame : OnBack → Exit
-Nanomachine_GameLogic_State_SetNewGame : OnEnter → IntoNewGameSetting
-Nanomachine_GameLogic_State_SetNewGame : OnExit → ExitNewGameSetting
 
 [*] --> Nanomachine_GameLogic_State_Readying
 @enduml

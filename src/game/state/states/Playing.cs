@@ -17,6 +17,12 @@ public partial class GameLogic {
                     => Input(new Input.Exit());
 
             public Transition On(in Input.Back input) => To<Pauseing>();
+            public Transition On(in Input.Exit input) {
+                var reason = input.Reason;
+                return To<Quit>().With(
+                    (state) => ((Quit)state).Reason = reason
+                );
+            }
         }
     }
 }
