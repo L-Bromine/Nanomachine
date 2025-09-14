@@ -3,14 +3,15 @@ namespace Nanomachine;
 using System;
 
 public interface IGameRepo : IDisposable {
+    public event Action? LoadFileFinished;
+    public event Action? LoadFileFailed;
+
     /// <summary>Event invoked when the game ends.</summary>
     public event Action? Ended;
 
-    public void NewGame();
-    public void LoadGame(string fileName);
-
-    public void Pause();
-    public void UnPause();
+    public void OnEnded();
+    public void OnLoadFileFailed();
+    public void OnLoadFileFinished();
 
 }
 
@@ -20,20 +21,15 @@ public interface IGameRepo : IDisposable {
 /// </summary>
 public class GameRepo : IGameRepo {
     public event Action? Ended;
+    public event Action? LoadFileFinished;
+    public event Action? LoadFileFailed;
 
-    private GameExitReason? _exitReason;
-
-
-    public void LoadGame(string fileName) => throw new NotImplementedException();
-    public void NewGame() {
-
-    }
-
+    public void OnEnded() => Ended?.Invoke();
+    public void OnLoadFileFailed() => LoadFileFailed?.Invoke();
+    public void OnLoadFileFinished() => LoadFileFinished?.Invoke();
 
     #region Internals
     public void Dispose() => GC.SuppressFinalize(this);
-    public void Pause() => throw new NotImplementedException();
-    public void UnPause() => throw new NotImplementedException();
 
     #endregion Internals
 }

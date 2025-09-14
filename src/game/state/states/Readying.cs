@@ -7,9 +7,11 @@ public partial class GameLogic {
         [Meta]
         public partial record Readying : State,
         IGet<Input.Load> {
-
             public Transition On(in Input.Load input) {
-                return To<Loading>();
+                var filename = input.FileName;
+                return To<Loading>().With(
+                    (state) => ((Loading)state).FileName = filename
+                );
             }
         }
     }

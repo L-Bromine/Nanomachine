@@ -8,15 +8,19 @@ state "GameLogic State" as Nanomachine_GameLogic_State {
   state "Readying" as Nanomachine_GameLogic_State_Readying
 }
 
-Nanomachine_GameLogic_State_Loading --> Nanomachine_GameLogic_State_Playing : Back
-Nanomachine_GameLogic_State_Loading --> Nanomachine_GameLogic_State_Quit : Exit
+Nanomachine_GameLogic_State_Loading --> Nanomachine_GameLogic_State_Playing : FinishLoadGame
 Nanomachine_GameLogic_State_Pauseing --> Nanomachine_GameLogic_State_Playing : Back
 Nanomachine_GameLogic_State_Pauseing --> Nanomachine_GameLogic_State_Quit : Exit
+Nanomachine_GameLogic_State_Playing --> Nanomachine_GameLogic_State_Loading : Load
 Nanomachine_GameLogic_State_Playing --> Nanomachine_GameLogic_State_Pauseing : Back
+Nanomachine_GameLogic_State_Playing --> Nanomachine_GameLogic_State_Quit : Exit
+Nanomachine_GameLogic_State_Quit --> Nanomachine_GameLogic_State_Readying : ToMenu
 Nanomachine_GameLogic_State_Readying --> Nanomachine_GameLogic_State_Loading : Load
 
+Nanomachine_GameLogic_State_Loading : OnEnter → LoadGame
 Nanomachine_GameLogic_State_Pauseing : OnEnter → IntoPaused
 Nanomachine_GameLogic_State_Pauseing : OnExit → OutofPaused
+Nanomachine_GameLogic_State_Quit : OnEnter → Exit
 
 [*] --> Nanomachine_GameLogic_State_Readying
 @enduml

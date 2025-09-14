@@ -7,6 +7,5 @@ public partial class AppLogic {
         public readonly record struct NewGame;
         public readonly record struct LoadGame(string? FileName);
         public readonly record struct EndGame;
-        public readonly record struct SaveFileLoaded(bool Flag);
     }
 }

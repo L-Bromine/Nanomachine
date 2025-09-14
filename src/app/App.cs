@@ -73,6 +73,8 @@ public partial class App : CanvasLayer, IApp {
         // 监听动画完成事件
         AnimationPlayer.AnimationFinished += OnAnimationFinished;
 
+        Game.ExitGame += OnExit;
+
         // 提供依赖服务，触发依赖此服务的节点的初始化
         this.Provide();
 
@@ -119,18 +121,10 @@ public partial class App : CanvasLayer, IApp {
 		  })
 		  // 处理隐藏游戏输出
 		  .Handle((in AppLogic.Output.HideGame _) => FadeToBlack())
-		  // 处理开始加载存档文件输出
-		  .Handle(
-			(in AppLogic.Output.StartLoadingSaveFile output) => {
-				// 订阅存档文件加载完成事件
-				Game.SaveFileLoaded += OnSaveFileLoaded;
-                // 加载现有游戏存档 TODO 异步加载
-                {
-                    var flag = Game.LoadGame(output.FileName);
-                    AppLogic.Input(new AppLogic.Input.SaveFileLoaded(flag));
-                }
-            }
-          ).Handle(
+          // 通知Game节点开始加载存档
+          .Handle(
+            (in AppLogic.Output.StartLoadingSaveFile output) => Game.LoadGame(output.FileName))
+          .Handle(
             (in AppLogic.Output.StartSettingNewGame _) => {
 			    HideMenus(); // 隐藏所有菜单
                 NewGameSettingPanel.InitPreview();
@@ -188,6 +182,10 @@ public partial class App : CanvasLayer, IApp {
         NewGameSettingPanel.ClearPreview(); // 隐藏新游戏设置界面
     }
 
+    public void OnExit() {
+        AppLogic.Input(new AppLogic.Input.EndGame());
+    }
+
     // 节点退出场景树时清理资源
     public void OnExitTree() {
         // 清理资源
@@ -203,9 +201,4 @@ public partial class App : CanvasLayer, IApp {
         AnimationPlayer.AnimationFinished -= OnAnimationFinished;
     }
 
-    // 存档文件加载完成事件处理
-    public void OnSaveFileLoaded() {
-        Game.SaveFileLoaded -= OnSaveFileLoaded; // 取消订阅事件
-        AppLogic.Input(new AppLogic.Input.SaveFileLoaded()); // 通知状态机
-    }
 }
