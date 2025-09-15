@@ -13,6 +13,17 @@ public interface IGame : INode3D, IProvide<IGameRepo> {
     public event Game.LoadGameFinishedEventHandler LoadGameFinished;
     public event Game.ExitGameEventHandler ExitGame;
 
+    /// <summary>
+    /// 通知Game的状态机加载游戏
+    /// </summary>
+    /// <param name="filename">存档名称</param>
+    public void CallLoadGame(string? filename = null);
+
+    /// <summary>
+    /// 实际加载存档
+    /// </summary>
+    /// <param name="fileName">存档名称</param>
+    /// <returns>是否加载成功</returns>
     public bool LoadGame(string? fileName = null);
     public bool SaveGame(string? filename = null);
     public void ClearGame();
@@ -46,12 +57,18 @@ public partial class Game : Node3D, IGame {
     [Signal] public delegate void ExitGameEventHandler();
     [Signal] public delegate void LoadGameFinishedEventHandler();
 
+    #region file
+
+    private string? _runningGame;
+
+    #endregion file
+
     public void Initialize() {
         GameRepo = new GameRepo();
         GameLogic = new GameLogic();
 
         // 设置状态机的依赖
-        GameLogic.Set(GameLogic);
+        GameLogic.Set(GameRepo);
         GameLogic.Set(new GameLogic.Data());
 
         // 提供依赖服务，触发依赖此服务的节点的初始化
@@ -76,6 +93,7 @@ public partial class Game : Node3D, IGame {
                 // TODO异步启动加载动画
                 // 加载游戏
                 var flag = LoadGame(output.FileName);
+                _runningGame = flag ? output.FileName : null;
                 if (flag) {
                     GameRepo.OnLoadFileFinished();
                 }
@@ -83,9 +101,12 @@ public partial class Game : Node3D, IGame {
                     GameRepo.OnLoadFileFailed();
                 }
             })
+            .Handle((in GameLogic.Output.StartGame _) => { })
             .Handle((in GameLogic.Output.IntoPaused _) => { })
             .Handle((in GameLogic.Output.OutofPaused _) => { })
             ;
+
+        GameLogic.Start();
     }
 
     public bool LoadGame(string? fileName) {
@@ -98,9 +119,15 @@ public partial class Game : Node3D, IGame {
         return false;
     }
 
-    public bool SaveGame(string? filename = null) => throw new System.NotImplementedException();
+    public bool SaveGame(string? filename = null) {
+        return false;
+    }
     public void ClearGame() {
         Logger.i.Log($"正在析构游戏……");
         // TODO 析构游戏
     }
+
+    public void CallLoadGame(string? filename = null) =>
+        GameLogic.Input(new GameLogic.Input.Load(filename));
+
 }

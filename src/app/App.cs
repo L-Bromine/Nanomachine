@@ -6,8 +6,11 @@ using Chickensoft.Introspection;
 
 using Godot;
 
+using Nanomachine.Log;
+
 // 应用程序主接口，定义应用级别的功能
 // 实现了ICanvasLayer和依赖注入提供者接口
+
 public interface IApp : ICanvasLayer, IProvide<IAppRepo>;
 
 // 使用AutoNode元数据标记，启用自动节点解析
@@ -102,7 +105,7 @@ public partial class App : CanvasLayer, IApp {
 		  // 结束当前游戏，析构
 		  .Handle((in AppLogic.Output.RemoveExistingGame _) => {
               Game.ClearGame();
-			  Game.Hide();
+              HideMenus();
           })
 		  // 处理显示主菜单输出
 		  .Handle((in AppLogic.Output.ShowMainMenu _) => {
@@ -117,13 +120,14 @@ public partial class App : CanvasLayer, IApp {
 		  // 处理显示游戏输出
 		  .Handle((in AppLogic.Output.ShowGame _) => {
 			  HideMenus(); // 隐藏所有菜单
+              Game.Show();
 			  FadeInFromBlack(); // 播放从黑屏淡入动画
 		  })
 		  // 处理隐藏游戏输出
 		  .Handle((in AppLogic.Output.HideGame _) => FadeToBlack())
           // 通知Game节点开始加载存档
           .Handle(
-            (in AppLogic.Output.StartLoadingSaveFile output) => Game.LoadGame(output.FileName))
+            (in AppLogic.Output.StartLoadingSaveFile output) => Game.CallLoadGame(output.FileName))
           .Handle(
             (in AppLogic.Output.StartSettingNewGame _) => {
 			    HideMenus(); // 隐藏所有菜单
@@ -179,12 +183,11 @@ public partial class App : CanvasLayer, IApp {
     public void HideMenus() {
         Splash.Hide(); // 隐藏启动画面
         Menu.Hide(); // 隐藏主菜单
+        Game.Hide();
         NewGameSettingPanel.ClearPreview(); // 隐藏新游戏设置界面
     }
 
-    public void OnExit() {
-        AppLogic.Input(new AppLogic.Input.EndGame());
-    }
+    public void OnExit() => AppRepo.OnExitGame();
 
     // 节点退出场景树时清理资源
     public void OnExitTree() {

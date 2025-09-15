@@ -1,6 +1,7 @@
 namespace Nanomachine;
 
 using Chickensoft.Introspection;
+using Chickensoft.LogicBlocks;
 
 public partial class GameLogic {
     public partial record State {
@@ -10,7 +11,7 @@ public partial class GameLogic {
         IGet<Input.Exit>,
         IGet<Input.Load> {
             public Playing() {
-
+                this.OnEnter(() => Output(new Output.StartGame()));
                 OnAttach(() => Get<IGameRepo>().Ended += OnEnded);
                 OnDetach(() => Get<IGameRepo>().Ended -= OnEnded);
             }

@@ -3,7 +3,7 @@ namespace Nanomachine;
 
 public partial class GameLogic {
     public static class Input {
-        public readonly record struct Load(string FileName);
+        public readonly record struct Load(string? FileName);
         public readonly record struct FinishLoadGame;
         public readonly record struct FailLoadGame;
 

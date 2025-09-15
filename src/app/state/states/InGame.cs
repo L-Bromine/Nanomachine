@@ -11,6 +11,7 @@ public partial class AppLogic {
         IGet<Input.LoadGame> {
             public InGame() {
                 this.OnEnter(() => {
+                    Output(new Output.StartLoadingSaveFile(Get<Data>().RunningFile));
                     Get<IAppRepo>().OnEnterGame();
                     Output(new Output.ShowGame());
                 });
@@ -33,8 +34,8 @@ public partial class AppLogic {
 
             public Transition On(in Input.EndGame input) => To<LeavingGame>();
             public Transition On(in Input.LoadGame input) {
-                Output(new Output.StartLoadingSaveFile(input.FileName));
-                return ToSelf();
+                Get<Data>().RunningFile = input.FileName;
+                return To<IntoingGame>();
             }
         }
     }

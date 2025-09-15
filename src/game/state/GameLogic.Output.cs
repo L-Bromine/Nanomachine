@@ -7,5 +7,7 @@ public partial class GameLogic {
         public readonly record struct IntoPaused;
         public readonly record struct OutofPaused;
         public readonly record struct LoadGame(string? FileName);
+        public readonly record struct StartGame;
+
     }
 }

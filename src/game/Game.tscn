@@ -1,13 +1,24 @@
-[gd_scene load_steps=4 format=3 uid="uid://50cjus4kewng"]
+[gd_scene load_steps=6 format=3 uid="uid://50cjus4kewng"]
 
 [ext_resource type="Script" uid="uid://47oenywn8r3v" path="res://src/game/Game.cs" id="1_17mmo"]
-[ext_resource type="PackedScene" uid="uid://xynya6tcsjqe" path="res://src/items/galaxy/galaxy.tscn" id="2_kqvf5"]
+[ext_resource type="PackedScene" uid="uid://xynya6tcsjqe" path="res://src/maps/galaxy/galaxy.tscn" id="2_kqvf5"]
 [ext_resource type="Texture2D" uid="uid://b6lmsfxt12bhp" path="res://src/ui/selectBox.png" id="4_7omc5"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_n6osq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kxp7u"]
+emission_enabled = true
+emission = Color(0.779291, 0.779291, 0.779291, 1)
 
 [node name="GameRoot" type="Node3D"]
 script = ExtResource("1_17mmo")
 
 [node name="Galaxy" parent="." instance=ExtResource("2_kqvf5")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Galaxy"]
+transform = Transform3D(25, 0, 0, 0, 25, 0, 0, 0, 25, 0, 0, 0)
+mesh = SubResource("BoxMesh_n6osq")
+surface_material_override/0 = SubResource("StandardMaterial3D_kxp7u")
 
 [node name="SelectBoxContainer" type="Container" parent="."]
 unique_name_in_owner = true
