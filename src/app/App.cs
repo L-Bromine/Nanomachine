@@ -74,7 +74,7 @@ public partial class App : CanvasLayer, IApp {
         // 监听动画完成事件
         AnimationPlayer.AnimationFinished += OnAnimationFinished;
 
-        Game.ExitGame += OnExit;
+        Game.ExitGame += OnGameExit;
 
         // 提供依赖服务，触发依赖此服务的节点的初始化
         this.Provide();
@@ -182,7 +182,7 @@ public partial class App : CanvasLayer, IApp {
         NewGameSettingPanel.ClearPreview(); // 隐藏新游戏设置界面
     }
 
-    public void OnExit() => AppRepo.OnExitGame();
+    public void OnGameExit() => AppRepo.OnExitGame();
 
     // 节点退出场景树时清理资源
     public void OnExitTree() {
