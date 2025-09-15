@@ -6,8 +6,6 @@ using Chickensoft.Introspection;
 
 using Godot;
 
-using Nanomachine.Log;
-
 // 应用程序主接口，定义应用级别的功能
 // 实现了ICanvasLayer和依赖注入提供者接口
 
@@ -89,53 +87,50 @@ public partial class App : CanvasLayer, IApp {
         AppBinding = AppLogic.Bind();
 
         AppBinding
-		  // 处理显示启动画面输出
-#pragma warning disable format
+        // 处理显示启动画面输出
+            .Handle((in AppLogic.Output.ShowSplashScreen _) => {
+                HideMenus(); // 隐藏所有菜单
+                BlankScreen.Hide(); // 隐藏黑屏遮罩
+                Splash.Show(); // 显示启动画面
+            })
+        // 处理隐藏启动画面输出
+            .Handle((in AppLogic.Output.HideSplashScreen _) => {
+                BlankScreen.Show(); // 显示黑屏遮罩
+                FadeToBlack(); // 播放淡出到黑屏动画
+            })
+        // 结束当前游戏，析构
+            .Handle((in AppLogic.Output.RemoveExistingGame _) => {
+                Game.ClearGame();
+                HideMenus();
+            })
+        // 处理显示主菜单输出
+            .Handle((in AppLogic.Output.ShowMainMenu _) => {
+                // 在显示黑屏时加载所有内容，然后淡入
+                HideMenus(); // 隐藏所有菜单
+                Menu.Show(); // 显示主菜单
 
-		  .Handle((in AppLogic.Output.ShowSplashScreen _) => {
-			  HideMenus(); // 隐藏所有菜单
-			  BlankScreen.Hide(); // 隐藏黑屏遮罩
-			  Splash.Show(); // 显示启动画面
-		  })
-		  // 处理隐藏启动画面输出
-		  .Handle((in AppLogic.Output.HideSplashScreen _) => {
-			  BlankScreen.Show(); // 显示黑屏遮罩
-			  FadeToBlack(); // 播放淡出到黑屏动画
-          })
-		  // 结束当前游戏，析构
-		  .Handle((in AppLogic.Output.RemoveExistingGame _) => {
-              Game.ClearGame();
-              HideMenus();
-          })
-		  // 处理显示主菜单输出
-		  .Handle((in AppLogic.Output.ShowMainMenu _) => {
-			  // 在显示黑屏时加载所有内容，然后淡入
-			  HideMenus(); // 隐藏所有菜单
-			  Menu.Show(); // 显示主菜单
-
-			  FadeInFromBlack(); // 播放从黑屏淡入动画
-		  })
-		  // 处理淡出到黑屏输出
-		  .Handle((in AppLogic.Output.FadeToBlack _) => FadeToBlack())
-		  // 处理显示游戏输出
-		  .Handle((in AppLogic.Output.ShowGame _) => {
-			  HideMenus(); // 隐藏所有菜单
-              Game.Show();
-			  FadeInFromBlack(); // 播放从黑屏淡入动画
-		  })
-		  // 处理隐藏游戏输出
-		  .Handle((in AppLogic.Output.HideGame _) => FadeToBlack())
-          // 通知Game节点开始加载存档
+                FadeInFromBlack(); // 播放从黑屏淡入动画
+            })
+        // 处理淡出到黑屏输出
+            .Handle((in AppLogic.Output.FadeToBlack _) => FadeToBlack())
+        // 处理显示游戏输出
+            .Handle((in AppLogic.Output.ShowGame _) => {
+                HideMenus(); // 隐藏所有菜单
+                Game.Show();
+                FadeInFromBlack(); // 播放从黑屏淡入动画
+            })
+        // 处理隐藏游戏输出
+            .Handle((in AppLogic.Output.HideGame _) => FadeToBlack())
+        // 通知Game节点开始加载存档
           .Handle(
             (in AppLogic.Output.StartLoadingSaveFile output) => Game.CallLoadGame(output.FileName))
           .Handle(
             (in AppLogic.Output.StartSettingNewGame _) => {
-			    HideMenus(); // 隐藏所有菜单
+                HideMenus(); // 隐藏所有菜单
                 NewGameSettingPanel.InitPreview();
                 FadeInFromBlack();
             }
           );
-#pragma warning restore format
 
         // 启动状态机，触发初始状态的OnEnter回调
 
